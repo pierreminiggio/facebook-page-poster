@@ -1,0 +1,24 @@
+{
+  "name": "@pierreminiggio/facebook-page-poster",
+  "version": "1.0.0",
+  "description": "Scrapes Facebook Groups",
+  "main": "./src/scrape.js",
+  "type": "module",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pierreminiggio/facebook-page-poster.git"
+  },
+  "author": "Pierre MINIGGIO",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pierreminiggio/facebook-page-poster/issues"
+  },
+  "homepage": "https://github.com/pierreminiggio/facebook-page-poster#readme",
+  "dependencies": {
+    "@pierreminiggio/facebook-login": "github:pierreminiggio/facebook-login",
+    "puppeteer": "^5.5.0"
+  }
+}
