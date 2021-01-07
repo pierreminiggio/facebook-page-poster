@@ -55,7 +55,7 @@ export default function (login, password, pageName, content, config = {}) {
             const postButtonSelector = '[aria-label="Publier"]'
             await page.click(postButtonSelector)
 
-            await page.waitForTimeout(5000)
+            await page.waitForTimeout(10000)
 
             await page.goto(pageLink)
 
