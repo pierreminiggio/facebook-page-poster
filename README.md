@@ -12,5 +12,5 @@ Utilisation :
 ```javascript
 import post from '@pierreminiggio/facebook-page-poster'
 
-await post('Facebook login or email', 'Facebook password', 'Facebook page name')
+await post('Facebook login or email', 'Facebook password', 'Facebook page name', 'Post content')
 ```

@@ -8,6 +8,7 @@ import post from './index.js'
         'Facebook login or email',
         'Facebook password',
         'Page name',
+        'Post content',
         {show: true}
     ))
 })()
