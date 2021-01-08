@@ -57,6 +57,16 @@ export default function (login, password, pageName, content, config = {}) {
 
             await page.waitForTimeout(10000)
 
+            const connectToClientCloseButtonSelector = '[aria-label="Discutez directement avec les clients"] [data-visualcompletion="ignore"]'
+            const connectToClientButtonShowedUp = await page.evaluate((connectToClientCloseButtonSelector) => {
+                return document.querySelector(connectToClientCloseButtonSelector) !== null
+            }, connectToClientCloseButtonSelector)
+
+            if (connectToClientButtonShowedUp) {
+                await page.click(connectToClientCloseButtonSelector)
+                await page.waitForTimeout(10000)
+            }
+
             await page.goto(pageLink)
 
             await scroll(page, 3000)
