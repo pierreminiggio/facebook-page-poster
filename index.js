@@ -1,5 +1,6 @@
 import loginToFacebook from '@pierreminiggio/facebook-login'
 import scroll from '@pierreminiggio/puppeteer-page-scroller'
+import { cpuUsage } from 'process'
 import puppeteer from 'puppeteer'
 
 /**
@@ -69,7 +70,7 @@ export default function (login, password, pageName, content, config = {}) {
 
             await page.goto(pageLink)
 
-            await scroll(page, 3000)
+            await scroll(page, 3500)
 
             const emptyLinkSelector = 'a[href="#"][role="link"]'
             await page.waitForSelector(emptyLinkSelector)
@@ -90,7 +91,6 @@ export default function (login, password, pageName, content, config = {}) {
             }, startOfNewPostLink, newPostLinkSelector)
 
             if (postId === null) {
-                await scroll(page, 500)
                 const emptyFallbackLinkSelector = '.oajrlxb2.g5ia77u1.qu0x051f.esr5mh6w.e9989ue4.r7d6kgcz.rq0escxv.nhd2j8a9.nc684nl6.p7hjln8o.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.jb3vyjys.rz4wbd8a.qt6c0cv9.a8nywdso.i1ao9s8h.esuyzwwr.f1sip0of.lzcic4wl.gmql0nx0.gpro0wi8.b1v8xokw'
                 const emptyFallbackLinkElements = await page.$$(emptyFallbackLinkSelector)
                 const emptyFallbackLinkElement = emptyFallbackLinkElements[1]
@@ -100,31 +100,25 @@ export default function (login, password, pageName, content, config = {}) {
                 const fallBackPostLinkSelector = 'a[href^="https://www.facebook.com/permalink.php?story_fbid="]'
                 postId = await page.evaluate(fallBackPostLinkSelector => {
                     const fallbackPostLinkElement = document.querySelector(fallBackPostLinkSelector)
-                    console.log(fallbackPostLinkElement)
 
                     if (fallbackPostLinkElement === null) {
                         return null
                     }
 
                     const fallbackPostLinkHref = fallbackPostLinkElement.href
-                    console.log(fallbackPostLinkHref)
                     if (! fallbackPostLinkHref) {
                         return null
                     }
 
                     const splitStory = fallbackPostLinkHref.split('?story_fbid=')
-                    console.log(splitStory)
                     if (splitStory.length !== 2) {
                         return null
                     }
 
                     const splitAfterStory = splitStory[1].split('&')
-                    console.log(splitAfterStory)
                     if (splitAfterStory.length === 0) {
                         return null
                     }
-
-                    console.log(splitAfterStory[0])
 
                     return splitAfterStory[0]
                 }, fallBackPostLinkSelector)
