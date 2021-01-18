@@ -81,13 +81,54 @@ export default function (login, password, pageName, content, config = {}) {
             const startOfNewPostLink = pageLink + '/posts/'
             const newPostLinkSelector = 'a[href^="' + startOfNewPostLink + '"]'
 
-            const postId = await page.evaluate((startOfNewPostLink, newPostLinkSelector) => {
+            let postId = await page.evaluate((startOfNewPostLink, newPostLinkSelector) => {
                 const postLinkElement = document.querySelector(newPostLinkSelector)
                 return postLinkElement ? postLinkElement.href.split('?')[0].replace(
                     startOfNewPostLink,
                     ''
                 ) : null
             }, startOfNewPostLink, newPostLinkSelector)
+
+            if (postId === null) {
+                await scroll(page, 500)
+                const emptyFallbackLinkSelector = '.oajrlxb2.g5ia77u1.qu0x051f.esr5mh6w.e9989ue4.r7d6kgcz.rq0escxv.nhd2j8a9.nc684nl6.p7hjln8o.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.jb3vyjys.rz4wbd8a.qt6c0cv9.a8nywdso.i1ao9s8h.esuyzwwr.f1sip0of.lzcic4wl.gmql0nx0.gpro0wi8.b1v8xokw'
+                const emptyFallbackLinkElements = await page.$$(emptyFallbackLinkSelector)
+                const emptyFallbackLinkElement = emptyFallbackLinkElements[1]
+                const emptyFallbackLinkBoundingBox = await emptyFallbackLinkElement.boundingBox()
+                await page.mouse.move(emptyFallbackLinkBoundingBox.x, emptyFallbackLinkBoundingBox.y)
+
+                const fallBackPostLinkSelector = 'a[href^="https://www.facebook.com/permalink.php?story_fbid="]'
+                postId = await page.evaluate(fallBackPostLinkSelector => {
+                    const fallbackPostLinkElement = document.querySelector(fallBackPostLinkSelector)
+                    console.log(fallbackPostLinkElement)
+
+                    if (fallbackPostLinkElement === null) {
+                        return null
+                    }
+
+                    const fallbackPostLinkHref = fallbackPostLinkElement.href
+                    console.log(fallbackPostLinkHref)
+                    if (! fallbackPostLinkHref) {
+                        return null
+                    }
+
+                    const splitStory = fallbackPostLinkHref.split('?story_fbid=')
+                    console.log(splitStory)
+                    if (splitStory.length !== 2) {
+                        return null
+                    }
+
+                    const splitAfterStory = splitStory[1].split('&')
+                    console.log(splitAfterStory)
+                    if (splitAfterStory.length === 0) {
+                        return null
+                    }
+
+                    console.log(splitAfterStory[0])
+
+                    return splitAfterStory[0]
+                }, fallBackPostLinkSelector)
+            }
 
             await browser.close()
             resolve(postId)
